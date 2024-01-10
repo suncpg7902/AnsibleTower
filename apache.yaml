@@ -27,41 +27,41 @@
 
     - name: Install the httpd rpm
       yum: name=httpd
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
     - name: Disable SELINUX
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'  
       lineinfile: dest=/etc/selinux/config  regexp="^SELINUX=enforcing" line="SELINUX=disabled" state=present
       notify:
         - restart httpd
     - name: Turning off SELiniux
       command: setenforce 0
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
+    
     - name: http listen on port for centos {{ http_port }}
       lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen " line="Listen {{ http_port }}" state=present
       notify:
         - restart httpd
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
 
     - name: start the httpd service
       service: name=httpd state=started
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
 
     - name: install firewalld
       yum: name=firewalld update_cache=yes state=latest
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
 
     - name: restart the firewalld service after opening port {{http_port}}
       service: name=firewalld state=restarted
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
 
     - name: Open port {{ http_port }}
       command: sudo firewall-cmd --zone=public --add-port={{ http_port }}/tcp --permanent
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
 
     - name: start the firewalld service
       service: name=firewalld state=restarted
-      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_os_family == 'RedHat'
     - name: Gather facts from new server
       setup:
         filter: ansible_default_ipv4.address
